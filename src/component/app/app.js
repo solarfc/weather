@@ -1,14 +1,13 @@
-import "./app.css";
+import "./app.scss";
 import React, {Component} from "react";
-import {getCurrentWeatherData, getForecastWeatherData} from "../../service/service";
 import Form from "../form";
 import Spinner from "../spinner";
 import Weather from "../weather";
+import {getCurrentWeatherData, getForecastWeatherData} from "../../service/service";
 
 export default class App extends Component {
     state = {
-        loadingSite: true,
-        loadingWeather: false,
+        loading: false,
         error: false,
         city: '',
         current: [],
@@ -19,13 +18,10 @@ export default class App extends Component {
         getCurrentWeatherData(`weather?q=${this.state.city}`)
             .then(res => this.setState({current: res}))
             .catch(e => this.setState({error: e}));
+        getForecastWeatherData(`forecast?q=${this.state.city}`)
+            .then(res => this.setState({forecast: res}))
+            .catch(e => this.setState({error: e}));
     }
-
-    // update() {
-    //     getForecastWeatherData(`onecall?lat=33.441792&lon=-94.037689&exclude=hourly,daily`)
-    //         .then(res => this.setState({forecast: res}))
-    //         .catch(e => this.setState({error: e}))
-    // }
 
     onChangeCity = (e) => {
         e.preventDefault();
@@ -38,48 +34,41 @@ export default class App extends Component {
         this.updateWeather();
     }
 
-    componentDidMount() {
-        setTimeout(() => {
-            this.setState({loadingSite: false})
-        }, 1500);
-    }
+    // componentDidMount() {
+    //     setTimeout(() => {
+    //         this.setState({loadingSite: false})
+    //     }, 1500);
+    // }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if(prevState.current !== this.state.current) {
-            setTimeout(() => {
-                this.setState({loadingWeather: false})
-            }, 500)
-        }
-    }
+    // componentDidUpdate(prevProps, prevState, snapshot) {
+    //     if(prevState.current !== this.state.current) {
+    //         setTimeout(() => {
+    //             this.setState({loadingWeather: false})
+    //         }, 500)
+    //     }
+    // }
 
     render() {
         console.log(this.state);
-        const {loadingSite, loadingWeather, error, city, current} = this.state;
-        const spinner = loadingWeather ? <Spinner /> : null;
-        const errorMessage = error ? <div>Error</div> : null;
-        const content = !(loadingWeather || error || current.length === 0) ? <Weather current={current}/> : null;
-
-        if(loadingSite) {
-            return <div className="loading">
-                <Spinner />
-            </div>
-        }
+        const {loading, error, city, current, forecast} = this.state;
+        // const spinner = loadingWeather ? <Spinner /> : null;
+        // const errorMessage = error ? <div>Error</div> : null;
+        const content = !(loading || error || current.length === 0 || forecast.length === 0) ? <Weather current={current} forecast={forecast}/> : null;
+        // if(loadingSite) {
+        //     return <div className="loading">
+        //         <Spinner />
+        //     </div>
+        // }
 
         return (
-            <>
-                <header className="header">
-                    <div className="container">
+            <section>
+                <div className="container">
+                    <div className="content">
                         <Form onChangeWeather={this.onChangeWeather} onChangeCity={this.onChangeCity} city={city}/>
-                    </div>
-                </header>
-                <main role="main">
-                    <div className="container">
-                        {errorMessage}
-                        {spinner}
                         {content}
                     </div>
-                </main>
-            </>
+                </div>
+            </section>
         )
     }
 };
