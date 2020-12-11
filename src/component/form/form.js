@@ -1,14 +1,15 @@
-import "./form.css";
+import "../../style/component/_form.scss";
 import React from "react";
 
-const Form = ({city, onChangeWeather, onChangeCity}) => {
+const Form = ({city, loading, onChangeWeather, onChangeCity}) => {
+    const isLoad = loading ? "disabled" : null
     return (
         <form action="" onSubmit={onChangeWeather}>
             <div className="form-group">
-                <input type="text" value={city} onChange={onChangeCity} placeholder="Search city"/>
+                <input disabled={isLoad} type="text" value={city} onChange={onChangeCity} placeholder="Search city"/>
             </div>
             <div className="form-group">
-                <button type="submit">Search</button>
+                <button type="submit" disabled={isLoad}>Search</button>
             </div>
         </form>
     )

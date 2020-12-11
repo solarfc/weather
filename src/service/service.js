@@ -13,9 +13,9 @@ const getRecourse = async (path) => {
 export const getCurrentWeatherData = async (path) => {
     const res = await getRecourse(path);
     return res;
-}
+};
 
 export const getForecastWeatherData = async (path) => {
     const res = await getRecourse(path);
     return res;
-}
+};
